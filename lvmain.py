@@ -11,6 +11,7 @@ WINDOW_WIDTH = 800
 WINDOW_HEIGHT = 600
 WHITE = (255, 255, 255)
 GRAY = (200, 200, 200)
+LIGHT_GRAY = (240, 240, 240)  # Light gray color
 FONT = pygame.font.Font(None, 36)
 SMALL_FONT = pygame.font.Font(None, 25)
 INPUT_FONT = pygame.font.Font(None, 48)
@@ -98,7 +99,7 @@ def main():
 
         # Gmail message design
         pygame.draw.rect(screen, (255, 255, 255), (20, 20, 760, 80))
-        pygame.draw.rect(screen, (240, 240, 240), (20, 100, 760, GRAY_RECT_HEIGHT))
+        pygame.draw.rect(screen, LIGHT_GRAY, (20, 100, 760, GRAY_RECT_HEIGHT))  # Use LIGHT_GRAY color
         pygame.draw.line(screen, (200, 200, 200), (20, 100), (780, 100), 2)
 
         # Light gray lines under "To," "From," and "Subject" lines with reduced space
@@ -160,7 +161,7 @@ def main():
                 screen.fill(WHITE)
 
                 # Gmail-like reply screen design
-                pygame.draw.rect(screen, (240, 240, 240), (20, 100, 760, GRAY_RECT_HEIGHT))
+                pygame.draw.rect(screen, LIGHT_GRAY, (20, 100, 760, GRAY_RECT_HEIGHT))  # Use LIGHT_GRAY color
 
                 # To: Wonderful World of OZ
                 to_line_reply = SMALL_FONT.render("To: Wonderful World of OZ", True, GRAY)
@@ -174,7 +175,7 @@ def main():
 
                 # Create an input field for the user's reply
                 reply_input_rect = pygame.Rect(30, 150, GRAY_RECT_WIDTH - 60, 40)
-                pygame.draw.rect(screen, (255, 255, 255), reply_input_rect)
+                pygame.draw.rect(screen, LIGHT_GRAY, reply_input_rect)  # Use LIGHT_GRAY color
 
                 # Display the user's reply in the input field
                 reply_input_surface = INPUT_FONT.render(reply_input_text, True, (0, 0, 0))
