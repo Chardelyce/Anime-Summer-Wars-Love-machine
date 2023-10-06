@@ -38,7 +38,6 @@ def encrypt_message(message):
             encrypted_message.append(char)
     return " ".join(encrypted_message)
 
-
 def render_paragraph(surface, font, text, x, y, width, line_height):
     lines = []
     current_line = []
@@ -76,7 +75,8 @@ def main():
 
     input_text = ""
     solved = False
-    show_reply_screen = False  # Add a flag to control whether to show the reply screen
+    show_reply_screen = False
+    reply_input_text = ""  # Initialize the reply input text
 
     while not solved:
         for event in pygame.event.get():
@@ -137,31 +137,52 @@ def main():
 
         # Show the reply screen if the flag is set
         if show_reply_screen:
-            screen.fill(WHITE)
-            
-            # Create the reply screen content
-            # Gray rectangle for the reply screen
-            pygame.draw.rect(screen, (240, 240, 240), (20, 100, 760, GRAY_RECT_HEIGHT))
-            
-            # To: Wonderful World of OZ
-            to_line_reply = SMALL_FONT.render("To: Wonderful World of OZ", True, GRAY)
-            screen.blit(to_line_reply, (30, 20))
-            # From: User's Name
-            from_line_reply = SMALL_FONT.render(f"From: {username}", True, GRAY)
-            screen.blit(from_line_reply, (30, 50))
-            # Subject: Re solve me
-            subject_line_reply = SMALL_FONT.render("Subject: Re: Solve me", True, GRAY)
-            screen.blit(subject_line_reply, (30, 80))
-            
-            pygame.display.flip()
-            while show_reply_screen:
+            reply_input_text = ""  # Clear the reply input text when entering the reply screen
+            reply_screen_active = True
+
+            while reply_screen_active:
                 for event in pygame.event.get():
                     if event.type == pygame.QUIT:
                         pygame.quit()
                         sys.exit()
-                # Add your reply form or any desired content here
-                # You can handle user input for the reply form similarly to the main loop
-                # and set show_reply_screen to False when the user submits the reply
+                    elif event.type == pygame.KEYDOWN:
+                        if event.key == pygame.K_RETURN:
+                            # Check if the user's reply on the reply screen matches the expected message
+                            if reply_input_text.lower() == message.lower():
+                                solved = True
+                            else:
+                                reply_input_text = ""
+                        elif event.key == pygame.K_BACKSPACE:
+                            reply_input_text = reply_input_text[:-1]
+                        elif event.unicode.isalpha():  # Check if input is a letter
+                            reply_input_text += event.unicode
+
+                screen.fill(WHITE)
+
+                # Gmail-like reply screen design
+                pygame.draw.rect(screen, (240, 240, 240), (20, 100, 760, GRAY_RECT_HEIGHT))
+
+                # To: Wonderful World of OZ
+                to_line_reply = SMALL_FONT.render("To: Wonderful World of OZ", True, GRAY)
+                screen.blit(to_line_reply, (30, 20))
+                # From: User's Name
+                from_line_reply = SMALL_FONT.render(f"From: {username}", True, GRAY)
+                screen.blit(from_line_reply, (30, 50))
+                # Subject: Re solve me
+                subject_line_reply = SMALL_FONT.render("Subject: Re: Solve me", True, GRAY)
+                screen.blit(subject_line_reply, (30, 80))
+
+                # Create an input field for the user's reply
+                reply_input_rect = pygame.Rect(30, 150, GRAY_RECT_WIDTH - 60, 40)
+                pygame.draw.rect(screen, (255, 255, 255), reply_input_rect)
+
+                # Display the user's reply in the input field
+                reply_input_surface = INPUT_FONT.render(reply_input_text, True, (0, 0, 0))
+                screen.blit(reply_input_surface, (reply_input_rect.x + 10, reply_input_rect.y + 10))
+
+                pygame.display.flip()
+
+            show_reply_screen = False  # Reset the flag when leaving the reply screen
 
     # Puzzle solved
     pygame.quit()
