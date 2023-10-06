@@ -29,16 +29,15 @@ def alphabet_mapping(letter):
 
 def encrypt_message(message):
     encrypted_message = []
-    solution = []
     for char in message:
         if char.isalpha():
-            position = ord(char) - ord('a') + 1
-            cubed_result = position ** 3
+            char_value = ord(char.lower()) - ord('a') + 1
+            cubed_result = char_value ** 3
             encrypted_message.append(str(cubed_result))
-            solution.append(str(position))
         else:
             encrypted_message.append(char)
-    return " ".join(encrypted_message), " ".join(solution)
+    return " ".join(encrypted_message)
+
 
 def render_paragraph(surface, font, text, x, y, width, line_height):
     lines = []
@@ -69,7 +68,7 @@ def main():
     username = getpass.getuser()
 
     message = "The magic words are squeamish ossifrage to know is to know that you know nothing That is the true meaning of knowledge"
-    encrypted_message, solution = encrypt_message(message)
+    encrypted_message = encrypt_message(message)
 
     # Initialize Pygame window
     screen = pygame.display.set_mode((WINDOW_WIDTH, WINDOW_HEIGHT))
@@ -77,6 +76,7 @@ def main():
 
     input_text = ""
     solved = False
+    show_reply_screen = False  # Add a flag to control whether to show the reply screen
 
     while not solved:
         for event in pygame.event.get():
@@ -85,7 +85,7 @@ def main():
                 sys.exit()
             elif event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_RETURN:
-                    if input_text == solution:
+                    if input_text == encrypted_message:
                         solved = True
                     else:
                         input_text = ""
@@ -120,7 +120,48 @@ def main():
         input_surface = INPUT_FONT.render(input_text, True, (0, 0, 0))
         screen.blit(input_surface, (30, 520))
 
+        # Add a "Reply" button
+        reply_button = SMALL_FONT.render("Reply", True, (0, 0, 0))
+        reply_button_rect = reply_button.get_rect()
+        reply_button_rect.center = (WINDOW_WIDTH // 2, 570)
+        screen.blit(reply_button, reply_button_rect)
+
+        # Check if the "Reply" button is clicked
+        mouse_x, mouse_y = pygame.mouse.get_pos()
+        if reply_button_rect.collidepoint(mouse_x, mouse_y):
+            pygame.draw.rect(screen, (200, 200, 200), reply_button_rect, 1)
+            if pygame.mouse.get_pressed()[0]:  # Left mouse button clicked
+                show_reply_screen = True
+
         pygame.display.flip()
+
+        # Show the reply screen if the flag is set
+        if show_reply_screen:
+            screen.fill(WHITE)
+            
+            # Create the reply screen content
+            # Gray rectangle for the reply screen
+            pygame.draw.rect(screen, (240, 240, 240), (20, 100, 760, GRAY_RECT_HEIGHT))
+            
+            # To: Wonderful World of OZ
+            to_line_reply = SMALL_FONT.render("To: Wonderful World of OZ", True, GRAY)
+            screen.blit(to_line_reply, (30, 20))
+            # From: User's Name
+            from_line_reply = SMALL_FONT.render(f"From: {username}", True, GRAY)
+            screen.blit(from_line_reply, (30, 50))
+            # Subject: Re solve me
+            subject_line_reply = SMALL_FONT.render("Subject: Re: Solve me", True, GRAY)
+            screen.blit(subject_line_reply, (30, 80))
+            
+            pygame.display.flip()
+            while show_reply_screen:
+                for event in pygame.event.get():
+                    if event.type == pygame.QUIT:
+                        pygame.quit()
+                        sys.exit()
+                # Add your reply form or any desired content here
+                # You can handle user input for the reply form similarly to the main loop
+                # and set show_reply_screen to False when the user submits the reply
 
     # Puzzle solved
     pygame.quit()
