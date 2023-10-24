@@ -13,3 +13,5 @@ A program that sends series of numbers in a sequence to be solved, taken with in
 
 
 ![image](https://github.com/Chardelyce/Love-machine/assets/63970461/cf0b7a52-d038-4332-b616-f90d6e2f3168)
+
+Can you decode the secret message ?
